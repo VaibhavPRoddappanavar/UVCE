@@ -1,0 +1,29 @@
+.india-svg {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto;
+}
+.state-path {
+  fill: #ffe6c7;
+  stroke: var(--gold, #e1ad01);
+  stroke-width: 2;
+  transition: fill 0.2s, stroke 0.2s, filter 0.2s;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(224, 173, 1, 0.04));
+}
+.state-path.state-hover {
+  fill: var(--saffron, #ff9933);
+  stroke: var(--deep-maroon, #800000);
+  filter: drop-shadow(0 4px 12px rgba(255, 153, 51, 0.12));
+}
+.state-path.state-selected {
+  fill: var(--peacock-blue, #006a71);
+  stroke: var(--gold, #e1ad01);
+  filter: drop-shadow(0 0 16px #e1ad01);
+}
+.modal-indian {
+  border-image: repeating-linear-gradient(90deg, var(--saffron), var(--gold) 40%, var(--deep-maroon) 60%, var(--peacock-blue) 100%) 10;
+  box-shadow: 0 8px 32px rgba(128,0,0,0.10);
+}

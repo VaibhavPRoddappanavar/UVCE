@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Menu, X, Palette } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'Explore Art', href: '#explore' },
-    { name: 'Artists', href: '#artists' },
-    { name: 'Brands', href: '#brands' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', to: '/' },
+    { name: 'Marketplace', to: '/marketplace' },
+    { name: 'Artist Dashboard', to: '/artist' },
+    // { name: 'Explore Art', to: '#' },
+    // { name: 'Artists', to: '#' },
+    // { name: 'Brands', to: '#' },
+    // { name: 'About', to: '#' },
+    // { name: 'Contact', to: '#' },
   ];
 
   return (
@@ -29,13 +32,14 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.to}
                   className="text-stone-600 hover:text-orange-500 px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:bg-orange-50"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -56,14 +60,14 @@ const Navbar = () => {
       <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
         <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-stone-200">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.name}
-              href={item.href}
+              to={item.to}
               className="text-stone-600 hover:text-orange-500 block px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 hover:bg-orange-50"
               onClick={() => setIsMenuOpen(false)}
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
