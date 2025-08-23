@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 
+interface Artwork {
+  _id: string;
+  title: string;
+  image: string;
+  artistName: string;
+  price: number;
+  description: string;
+  state: string;
+  artist: string;
+  isActive: boolean;
+  views: number;
+  likes: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface PurchasedArt {
   id: string;
   title: string;
@@ -19,50 +35,32 @@ interface BrandProfile {
   website: string;
 }
 
-const availableArtworks = [
-  {
-    id: 'warli-dance',
-    title: 'Warli Dance',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Warli_Painting.jpg',
-    artist: 'Savitri Devi',
-    price: '2000',
-    digitalPrice: '1500',
-    physicalPrice: '2500',
-    description: 'A beautiful Warli painting depicting tribal dance from Maharashtra.',
-  },
-  {
-    id: 'madhubani-sun',
-    title: 'Madhubani Sun',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Madhubani_art.jpg',
-    artist: 'Geeta Kumari',
-    price: '2500',
-    digitalPrice: '2000',
-    physicalPrice: '3000',
-    description: 'Traditional Madhubani art from Bihar, vibrant sun motif.',
-  },
-];
-
 const productTypes = [
   'T-Shirts', 'Mugs', 'Tote Bags', 'Phone Cases', 'Posters', 'Notebooks', 'Cushions', 'Stickers'
 ];
 
 const BrandDashboard: React.FC = () => {
+  // Removed availableArtworks API call for quick fix
   const [purchasedArt, setPurchasedArt] = useState<PurchasedArt[]>([]);
   const [profile, setProfile] = useState<BrandProfile>({
     name: '', email: '', industry: '', website: ''
   });
   const [showProfile, setShowProfile] = useState(false);
-  const [selectedArt, setSelectedArt] = useState<typeof availableArtworks[0] | null>(null);
+  const [selectedArt, setSelectedArt] = useState<Artwork | null>(null);
   const [licenseModal, setLicenseModal] = useState(false);
 
-  const handlePurchase = (art: typeof availableArtworks[0], licenseType: 'digital' | 'physical' | 'both') => {
+  const handlePurchase = (art: Artwork, licenseType: 'digital' | 'physical' | 'both') => {
+    const digitalPrice = Math.round(art.price * 0.7); // 30% discount for digital
+    const physicalPrice = art.price;
+    
     const newPurchase: PurchasedArt = {
-      id: art.id,
+      id: art._id,
       title: art.title,
       image: art.image,
-      artist: art.artist,
-      price: licenseType === 'digital' ? art.digitalPrice : licenseType === 'physical' ? art.physicalPrice : 
-             (parseInt(art.digitalPrice) + parseInt(art.physicalPrice)).toString(),
+      artist: art.artistName,
+      price: licenseType === 'digital' ? digitalPrice.toString() : 
+             licenseType === 'physical' ? physicalPrice.toString() : 
+             (digitalPrice + physicalPrice).toString(),
       licenseType,
       purchaseDate: new Date().toLocaleDateString(),
       products: []
@@ -141,7 +139,7 @@ const BrandDashboard: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full section-indian">
             <h3 className="text-xl font-bold header-indian mb-4">Choose License Type</h3>
             <img src={selectedArt.image} alt={selectedArt.title} className="w-32 h-32 object-cover rounded mx-auto mb-4 border-2 border-orange-200" />
-            <h4 className="font-semibold text-center mb-4">{selectedArt.title} by {selectedArt.artist}</h4>
+            <h4 className="font-semibold text-center mb-4">{selectedArt.title} by {selectedArt.artistName}</h4>
             <div className="space-y-3">
               <div className="border border-orange-200 rounded p-4 hover:bg-orange-50 cursor-pointer" 
                    onClick={() => handlePurchase(selectedArt, 'digital')}>
@@ -150,7 +148,7 @@ const BrandDashboard: React.FC = () => {
                     <div className="font-semibold">Digital License Only</div>
                     <div className="text-sm text-stone-600">Use on digital products, websites, apps</div>
                   </div>
-                  <div className="text-lg font-bold text-orange-600">₹{selectedArt.digitalPrice}</div>
+                  <div className="text-lg font-bold text-orange-600">₹{Math.round(selectedArt.price * 0.7)}</div>
                 </div>
               </div>
               <div className="border border-orange-200 rounded p-4 hover:bg-orange-50 cursor-pointer"
@@ -160,7 +158,7 @@ const BrandDashboard: React.FC = () => {
                     <div className="font-semibold">Physical License Only</div>
                     <div className="text-sm text-stone-600">Use on physical products, prints</div>
                   </div>
-                  <div className="text-lg font-bold text-orange-600">₹{selectedArt.physicalPrice}</div>
+                  <div className="text-lg font-bold text-orange-600">₹{selectedArt.price}</div>
                 </div>
               </div>
               <div className="border border-orange-200 rounded p-4 hover:bg-orange-50 cursor-pointer"
@@ -171,7 +169,7 @@ const BrandDashboard: React.FC = () => {
                     <div className="text-sm text-stone-600">Complete commercial rights</div>
                   </div>
                   <div className="text-lg font-bold text-orange-600">
-                    ₹{parseInt(selectedArt.digitalPrice) + parseInt(selectedArt.physicalPrice)}
+                    ₹{Math.round(selectedArt.price * 0.7) + selectedArt.price}
                   </div>
                 </div>
               </div>
@@ -191,28 +189,7 @@ const BrandDashboard: React.FC = () => {
         <div>
           <h3 className="text-xl font-semibold mb-4">Available Artworks</h3>
           <div className="space-y-4">
-            {availableArtworks.map(art => (
-              <div key={art.id} className="bg-white rounded-xl shadow section-indian p-4">
-                <div className="flex gap-4">
-                  <img src={art.image} alt={art.title} className="w-24 h-24 object-cover rounded border-2 border-orange-200" />
-                  <div className="flex-1">
-                    <h4 className="font-bold text-lg">{art.title}</h4>
-                    <p className="text-stone-600 text-sm mb-1">by {art.artist}</p>
-                    <p className="text-xs text-stone-500 mb-2">{art.description}</p>
-                    <div className="flex gap-2 text-sm">
-                      <span className="text-orange-600">Digital: ₹{art.digitalPrice}</span>
-                      <span className="text-orange-600">Physical: ₹{art.physicalPrice}</span>
-                    </div>
-                    <button 
-                      onClick={() => {setSelectedArt(art); setLicenseModal(true);}}
-                      className="btn-indian px-4 py-1 mt-2 text-sm"
-                    >
-                      Purchase License
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="text-center py-8 text-stone-500">No artworks available at the moment</div>
           </div>
         </div>
 

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { indiaStatesData } from '../data/indiaStatesData';
 import './IndiaMap.css';
 
 const IndiaMapGrid: React.FC = () => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const selectedStateData = selectedState ? indiaStatesData[selectedState as keyof typeof indiaStatesData] : null;
 
@@ -14,58 +16,83 @@ const IndiaMapGrid: React.FC = () => {
   // Handle state selection
   const handleStateSelection = (stateName: string) => {
     setSelectedState(stateName);
+    setIsDropdownOpen(false);
   };
 
-  // All states arranged in a clean grid
-  const statesGrid = [
-    ['jammu-kashmir', 'ladakh', 'himachal-pradesh', 'punjab', 'haryana', 'delhi'],
-    ['uttarakhand', 'uttar-pradesh', 'bihar', 'west-bengal', 'sikkim', 'arunachal-pradesh'],
-    ['rajasthan', 'madhya-pradesh', 'jharkhand', 'odisha', 'assam', 'nagaland'],
-    ['gujarat', 'chhattisgarh', 'telangana', 'andhra-pradesh', 'manipur', 'mizoram'],
-    ['maharashtra', 'karnataka', 'tamil-nadu', 'kerala', 'meghalaya', 'tripura'],
-    ['goa', '', '', '', '', '']
-  ];
+  // Get all states as an array for the dropdown
+  const allStates = Object.entries(indiaStatesData).map(([key, value]) => ({
+    key,
+    name: value.name
+  }));
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="w-full py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
       {/* Title Section */}
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold header-indian mb-4">🇮🇳 Explore India's Rich Heritage 🎨</h2>
-        <p className="text-lg text-stone-700">Click on any state to discover its unique art forms and cultural traditions</p>
+        <p className="text-lg text-stone-700">Select any state to discover its unique art forms and cultural traditions</p>
       </div>
 
-      {/* States Grid Layout */}
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-6 gap-4 max-w-4xl mx-auto">
-          {statesGrid.map((row, rowIndex) => 
-            row.map((stateKey, colIndex) => {
-              if (!stateKey) {
-                return <div key={`${rowIndex}-${colIndex}`} className="aspect-square"></div>;
+      {/* States Dropdown */}
+      <div className="max-w-lg mx-auto px-4">
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            className={`w-full bg-gradient-to-br from-amber-200 to-orange-300 hover:from-amber-300 hover:to-orange-400 border-2 border-amber-400 hover:border-orange-500 transition-all duration-300 rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-between p-4 text-stone-800 font-semibold text-lg ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            style={{
+              background: isDropdownOpen ? 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)' : 'linear-gradient(135deg, #e1ad01 0%, #ff9933 100%)',
+              border: '2px solid #800000',
+              color: '#3a2c1a'
+            }}
+          >
+            <span className="flex items-center">
+              <span className="mr-3 text-2xl">🗺️</span>
+              {selectedState 
+                ? indiaStatesData[selectedState as keyof typeof indiaStatesData].name
+                : 'Choose a State to Explore'
               }
-              
-              const stateData = indiaStatesData[stateKey as keyof typeof indiaStatesData];
-              if (!stateData) {
-                return <div key={`${rowIndex}-${colIndex}`} className="aspect-square"></div>;
-              }
-
-              return (
+            </span>
+            <svg 
+              className={`w-6 h-6 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+              fill="currentColor" 
+              viewBox="0 0 20 20"
+            >
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+          
+          {isDropdownOpen && (
+            <div 
+              className="absolute top-full left-0 right-0 bg-white border-2 border-amber-400 border-t-0 rounded-b-lg shadow-xl z-50 max-h-80 overflow-y-auto"
+              style={{ borderColor: '#800000' }}
+            >
+              {allStates.map(({ key, name }) => (
                 <button
-                  key={`${rowIndex}-${colIndex}`}
-                  className="aspect-square bg-gradient-to-br from-amber-200 to-orange-300 hover:from-amber-300 hover:to-orange-400 border border-amber-400 transition-all duration-300 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 flex flex-col items-center justify-center p-2 text-stone-800 font-semibold text-xs text-center"
-                  onClick={() => handleStateSelection(stateKey)}
-                  style={{
-                    background: 'linear-gradient(135deg, #e1ad01 0%, #ff9933 100%)',
-                    border: '2px solid #800000',
-                    color: '#3a2c1a'
-                  }}
+                  key={key}
+                  className={`w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-yellow-100 hover:to-orange-100 transition-colors border-b border-amber-200 last:border-b-0 text-stone-800 ${selectedState === key ? 'bg-gradient-to-r from-amber-100 to-orange-200 font-bold' : ''}`}
+                  onClick={() => handleStateSelection(key)}
                 >
-                  <div className="text-sm mb-1"></div>
-                  <div className="text-[10px] leading-tight font-bold text-stone-900">
-                    {stateData.name}
-                  </div>
+                  <span className="flex items-center">
+                    <span className="mr-3 text-lg">🏛️</span>
+                    {name}
+                  </span>
                 </button>
-              );
-            })
+              ))}
+            </div>
           )}
         </div>
       </div>

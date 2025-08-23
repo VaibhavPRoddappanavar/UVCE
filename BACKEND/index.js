@@ -6,6 +6,7 @@ const connectDB = require("./config/database");
 // Import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const artworkRoutes = require("./routes/artworks");
 
 // Load environment variables
 dotenv.config();
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
     endpoints: {
       auth: "/api/auth",
       users: "/api/users",
+      artworks: "/api/artworks",
     },
   });
 });
@@ -50,6 +52,7 @@ app.get("/", (req, res) => {
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/artworks", artworkRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
