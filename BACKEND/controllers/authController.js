@@ -4,8 +4,18 @@ const { generateToken } = require("../utils/jwt");
 // Register new user
 const register = async (req, res) => {
   try {
+    console.log("Registration request body:", req.body);
+
     const { email, password, userType, name, phone, artistInfo, businessInfo } =
       req.body;
+
+    // Validate required fields
+    if (!email || !password || !name) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, password, and name are required",
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });

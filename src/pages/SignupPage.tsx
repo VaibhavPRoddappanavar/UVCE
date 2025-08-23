@@ -65,6 +65,20 @@ const SignupPage: React.FC<SignupPageProps> = () => {
     setError('');
     setSuccess('');
 
+    // Validate required fields
+    if (!formData.email || !formData.password || !formData.name) {
+      setError('Email, password, and name are required');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -118,7 +132,7 @@ const SignupPage: React.FC<SignupPageProps> = () => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.success) {
         setSuccess('Account created successfully! Redirecting...');
         // Store token and redirect
         localStorage.setItem('token', data.data.token);
@@ -129,7 +143,12 @@ const SignupPage: React.FC<SignupPageProps> = () => {
                                  data.data.user.userType === 'business' ? '/brand' : '/';
         }, 2000);
       } else {
-        setError(data.message || 'Registration failed');
+        // Handle validation errors or other server errors
+        if (data.errors && data.errors.length > 0) {
+          setError(data.errors.join(', '));
+        } else {
+          setError(data.message || 'Registration failed');
+        }
       }
     } catch (error) {
       setError('Network error. Please try again.');
