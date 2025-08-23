@@ -12,6 +12,11 @@ type Artwork = {
   state: string;
 };
 
+interface CartItem extends Artwork {
+  product?: typeof productMockups[0];
+  quantity: number;
+}
+
 const demoArtworks: Artwork[] = [
   {
     id: 'warli-dance',
@@ -46,10 +51,27 @@ const productMockups = [
   {
     name: 'Tote Bag',
     image: 'https://cdn.pixabay.com/photo/2017/01/31/13/14/bag-2028215_1280.png',
+    basePrice: 300
   },
   {
     name: 'Mug',
     image: 'https://cdn.pixabay.com/photo/2014/12/21/23/40/mug-579720_1280.png',
+    basePrice: 250
+  },
+  {
+    name: 'T-Shirt',
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300',
+    basePrice: 500
+  },
+  {
+    name: 'Phone Case',
+    image: 'https://images.unsplash.com/photo-1601593346740-925612772716?w=300',
+    basePrice: 400
+  },
+  {
+    name: 'Poster',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300',
+    basePrice: 200
   },
 ];
 
@@ -105,7 +127,7 @@ const Marketplace: React.FC = () => {
               <img src={mockup.art.image} alt={mockup.art.title} className="absolute w-32 h-32 object-contain opacity-90 top-12 left-1/2 -translate-x-1/2" style={{borderRadius: '1rem', boxShadow: '0 2px 10px #e1ad01'}} />
             </div>
             <div className="flex gap-2 mt-4 justify-center">
-              {productMockups.map((prod, idx) => (
+              {productMockups.map((prod) => (
                 <button key={prod.name} className="btn-indian px-3 py-1 text-xs" onClick={() => setMockup({art: mockup.art, product: prod})}>{prod.name}</button>
               ))}
             </div>
@@ -115,13 +137,26 @@ const Marketplace: React.FC = () => {
       {/* Dummy Cart (for demo) */}
       {cart.length > 0 && (
         <div className="fixed bottom-6 right-6 bg-white rounded-xl shadow-lg border-2 border-orange-200 p-4 z-50">
-          <div className="font-bold text-orange-600 mb-2">Cart</div>
+          <div className="font-bold text-orange-600 mb-2">Cart ({cart.length})</div>
           <ul className="text-sm">
             {cart.map((item, i) => (
               <li key={i}>{item.title} - ₹{item.price}</li>
             ))}
           </ul>
-          <button className="btn-indian mt-2 px-6 py-1">Checkout</button>
+          <div className="flex gap-2 mt-2">
+            <button 
+              onClick={() => navigate('/checkout')}
+              className="btn-indian px-4 py-1 text-sm"
+            >
+              Checkout
+            </button>
+            <button 
+              onClick={() => setCart([])}
+              className="px-4 py-1 text-sm border border-stone-300 rounded"
+            >
+              Clear
+            </button>
+          </div>
         </div>
       )}
     </div>

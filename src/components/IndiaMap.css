@@ -1,3 +1,354 @@
+/* Enhanced India Map Styling */
+.india-map-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #FFF8DC 0%, #F0E68C 100%);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.india-map-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+}
+
+/* State path styling */
+.state-path {
+  fill: #FFE4B5;
+  stroke: #D2691E;
+  stroke-width: 1.5;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.state-path:hover {
+  fill: #FF6B35;
+  stroke: #CC5500;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 5px 15px rgba(255, 107, 53, 0.4));
+  transform: scale(1.02);
+  transform-origin: center;
+}
+
+.state-path.selected {
+  fill: #E74C3C;
+  stroke: #C0392B;
+  stroke-width: 3;
+  filter: drop-shadow(0 8px 25px rgba(231, 76, 60, 0.6));
+  animation: pulse 2s infinite;
+}
+
+/* State labels */
+.state-label {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  font-size: 11px;
+  font-weight: bold;
+  fill: #2C3E50;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.state-label:hover {
+  opacity: 1;
+  font-size: 12px;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    filter: drop-shadow(0 8px 25px rgba(231, 76, 60, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 8px 35px rgba(231, 76, 60, 0.8));
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 107, 53, 0.8);
+  }
+}
+
+/* Modal styling for state details */
+.state-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
+  border-radius: 20px;
+  padding: 0;
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  border: 3px solid #D2691E;
+  position: relative;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #FF6B35 0%, #E74C3C 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 17px 17px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1.5" fill="white" opacity="0.1"/><circle cx="40" cy="70" r="1" fill="white" opacity="0.1"/></svg>');
+  pointer-events: none;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.modal-header .capital {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-top: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.state-story {
+  background: rgba(255, 107, 53, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  border-left: 5px solid #FF6B35;
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #2C3E50;
+}
+
+.artforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.artform-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.artform-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border-color: #FF6B35;
+}
+
+.artform-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.artform-card:hover .artform-image {
+  transform: scale(1.05);
+}
+
+.artform-content {
+  padding: 20px;
+}
+
+.artform-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #E74C3C;
+  margin-bottom: 10px;
+}
+
+.artform-description {
+  color: #555;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Decorative elements */
+.decorative-border {
+  height: 4px;
+  background: linear-gradient(90deg, #FF6B35, #E74C3C, #D2691E, #FF6B35);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 2rem;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .artforms-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .state-story {
+    font-size: 1rem;
+    padding: 15px;
+  }
+}
+
+/* Loading animation */
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 107, 53, 0.3);
+  border-radius: 50%;
+  border-top-color: #FF6B35;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Map title styling */
+.map-title {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #FF6B35 0%, #E74C3C 100%);
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.map-title h2 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.map-title p {
+  margin: 10px 0 0 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Tooltip */
+.state-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+}
+
+.state-tooltip.visible {
+  opacity: 1;
+}
+
+/* Legacy classes for backward compatibility */
 .india-svg {
   width: 100%;
   height: auto;
@@ -5,24 +356,7 @@
   display: block;
   margin: 0 auto;
 }
-.state-path {
-  fill: #ffe6c7;
-  stroke: var(--gold, #e1ad01);
-  stroke-width: 2;
-  transition: fill 0.2s, stroke 0.2s, filter 0.2s;
-  cursor: pointer;
-  filter: drop-shadow(0 2px 4px rgba(224, 173, 1, 0.04));
-}
-.state-path.state-hover {
-  fill: var(--saffron, #ff9933);
-  stroke: var(--deep-maroon, #800000);
-  filter: drop-shadow(0 4px 12px rgba(255, 153, 51, 0.12));
-}
-.state-path.state-selected {
-  fill: var(--peacock-blue, #006a71);
-  stroke: var(--gold, #e1ad01);
-  filter: drop-shadow(0 0 16px #e1ad01);
-}
+
 .modal-indian {
   border-image: repeating-linear-gradient(90deg, var(--saffron), var(--gold) 40%, var(--deep-maroon) 60%, var(--peacock-blue) 100%) 10;
   box-shadow: 0 8px 32px rgba(128,0,0,0.10);

@@ -9,6 +9,7 @@ const Navbar = () => {
     { name: 'Home', to: '/' },
     { name: 'Marketplace', to: '/marketplace' },
     { name: 'Artist Dashboard', to: '/artist' },
+    { name: 'Brand Dashboard', to: '/brand' },
     // { name: 'Explore Art', to: '#' },
     // { name: 'Artists', to: '#' },
     // { name: 'Brands', to: '#' },
