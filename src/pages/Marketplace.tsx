@@ -70,7 +70,7 @@ const Marketplace: React.FC = () => {
       setLoading(true);
       setError('');
       
-      let url = 'http://localhost:5000/api/artworks';
+      let url = 'https://uvce-backend.onrender.com/api/artworks';
       const params = new URLSearchParams();
       
       if (selectedState && selectedState !== 'All States') {

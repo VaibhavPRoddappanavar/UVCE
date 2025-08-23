@@ -80,7 +80,7 @@ export const authUtils = {
 
   // API call with auth
   apiCall: async (url: string, options: RequestInit = {}) => {
-    const baseURL = 'http://localhost:5000/api';
+    const baseURL = 'https://uvce-backend.onrender.com/api';
     const response = await fetch(`${baseURL}${url}`, {
       ...options,
       headers: {
